@@ -4,8 +4,15 @@ import 'package:news_app_c10_mon/core/config/pages_route_name.dart';
 import 'package:news_app_c10_mon/core/config/routes.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+// 1- MVVM Architecture pattern  MVC MVP
+// Bloc state management
+
+
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {

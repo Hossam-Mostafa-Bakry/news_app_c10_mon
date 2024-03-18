@@ -6,6 +6,7 @@ import 'package:news_app_c10_mon/models/article_model.dart';
 import 'package:news_app_c10_mon/models/source_model.dart';
 
 class ApiManager {
+
   static Future<List<SourceModel>> fetchDataSource(String categoryId) async {
     Map<String, dynamic> queryParams = {
       "apiKey": Constants.apiKey,
@@ -21,6 +22,7 @@ class ApiManager {
     final response = await http.get(url);
 
     List<SourceModel> sourcesDataList = [];
+
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
 

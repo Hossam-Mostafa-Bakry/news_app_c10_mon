@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:news_app_c10_mon/pages/home/viewModel/articles_view_model.dart';
 import 'package:news_app_c10_mon/pages/home/widgets/tab_item.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/source_model.dart';
 import 'article_list_widget.dart';
@@ -19,40 +21,57 @@ class NewsListView extends StatefulWidget {
 class _NewsListViewState extends State<NewsListView> {
   int selectedIndex = 0;
 
+  var viewModel = ArticlesViewModel();
+
+  @override
+  void initState() {
+    viewModel.getNewsArticles(widget.sourcesList[selectedIndex].id);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        DefaultTabController(
-          length: widget.sourcesList.length,
-          initialIndex: selectedIndex,
-          child: TabBar(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            isScrollable: true,
-            indicator: const BoxDecoration(),
-            labelPadding: EdgeInsets.symmetric(horizontal: 8.0),
-            dividerColor: Colors.transparent,
-            dividerHeight: 0,
-            onTap: (index) {
-              setState(() {
-                selectedIndex = index;
-              });
-            },
-            tabs: widget.sourcesList
-                .map(
-                  (e) => TabItem(
-                    sourceModel: e,
-                    isSelected: selectedIndex == widget.sourcesList.indexOf(e),
-                  ),
-                )
-                .toList(),
-          ),
-        ),
-        ArticleListWidget(
-          sourceId: widget.sourcesList[selectedIndex].id,
-        ),
-      ],
+
+    return ChangeNotifierProvider(
+      create: (context) => viewModel,
+      child: Consumer<ArticlesViewModel>(
+        builder: (context, vm, child) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              DefaultTabController(
+                length: widget.sourcesList.length,
+                initialIndex: selectedIndex,
+                child: TabBar(
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  isScrollable: true,
+                  indicator: const BoxDecoration(),
+                  labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  dividerColor: Colors.transparent,
+                  dividerHeight: 0,
+                  onTap: (index) {
+                    setState(() {
+                      selectedIndex = index;
+                      vm.getNewsArticles(widget.sourcesList[index].id);
+                    });
+                  },
+                  tabs: widget.sourcesList
+                      .map(
+                        (e) => TabItem(
+                      sourceModel: e,
+                      isSelected: selectedIndex == widget.sourcesList.indexOf(e),
+                    ),
+                  )
+                      .toList(),
+                ),
+              ),
+              ArticleListWidget(
+                sourceId: widget.sourcesList[selectedIndex].id,
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
